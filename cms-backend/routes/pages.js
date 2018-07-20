@@ -71,30 +71,41 @@ pageRouter.get("/edit-page/:id", function (req, res) {
 
 //POST edit page
 pageRouter.post("/edit-page/:id", function (req, res) {
+
     let id = req.params.id;
+
     let title = req.body.title;
     let slug = req.body.title.replace(/\s+/g, '-').toLowerCase();
     let content = req.body.content;
-    // const hasSidebar = req.body.hasSidebar;
-    // const sidebar = (hasSidebar) ? "yes" : "no";
+    // lethasSidebar = req.body.hasSidebar;
+    // letsidebar = (hasSidebar) ? "yes" : "no";
 
-    Page.findById(id, function (err, page) {
-        if (err) console.log(err);
-
-        if (page.slug === slug && page._id != id) {
+    Page.findOne({
+        slug: slug,
+        _id: {
+            '$ne': id
+        }
+    }, function (e, p) {
+        if (e) console.log(e);
+        if (p) {
             res.json("pageExists");
         } else {
-            page.title = title;
-            page.slug = slug;
-            page.content = content;
+            Page.findById(id, function (err, page) {
+                if (err) console.log(err);
 
-            page.save(function (err) {
-                if (err) {
-                    console.log(err);
-                    res.json("problem");
-                } else {
-                    res.json("ok");
-                }
+                page.title = title;
+                page.slug = slug;
+                page.content = content;
+                // page.sidebar = sidebar;
+
+                page.save(function (err) {
+                    if (err) {
+                        console.log(err);
+                        res.json("problem");
+                    } else {
+                        res.json("ok");
+                    }
+                });
             });
         }
     });
