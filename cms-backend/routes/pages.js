@@ -80,6 +80,7 @@ pageRouter.post("/edit-page/:id", function (req, res) {
     // lethasSidebar = req.body.hasSidebar;
     // letsidebar = (hasSidebar) ? "yes" : "no";
 
+    
     Page.findOne({
         slug: slug,
         _id: {
